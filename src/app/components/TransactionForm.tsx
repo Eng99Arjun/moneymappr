@@ -68,41 +68,65 @@ export default function TransactionForm({ onTransactionAdded }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
       {/* Amount */}
       <div>
-        <Label htmlFor="amount">Amount</Label>
-        <Input type="number" {...register('amount')} />
+        <Label htmlFor="amount" className="text-sm sm:text-base">
+          Amount
+        </Label>
+        <Input
+          type="number"
+          className="h-10 sm:h-11 text-sm sm:text-base"
+          {...register('amount')}
+        />
         {errors.amount && (
-          <p className="text-red-500 text-sm">{errors.amount.message}</p>
+          <p className="text-red-500 text-xs sm:text-sm mt-1">
+            {errors.amount.message}
+          </p>
         )}
       </div>
 
       {/* Description */}
       <div>
-        <Label htmlFor="description">Description</Label>
-        <Input type="text" {...register('description')} />
+        <Label htmlFor="description" className="text-sm sm:text-base">
+          Description
+        </Label>
+        <Input
+          type="text"
+          className="h-10 sm:h-11 text-sm sm:text-base"
+          {...register('description')}
+        />
       </div>
 
       {/* Date */}
       <div>
-        <Label htmlFor="date">Date</Label>
-        <Input type="date" {...register('date')} />
+        <Label htmlFor="date" className="text-sm sm:text-base">
+          Date
+        </Label>
+        <Input
+          type="date"
+          className="h-10 sm:h-11 text-sm sm:text-base"
+          {...register('date')}
+        />
         {errors.date && (
-          <p className="text-red-500 text-sm">{errors.date.message}</p>
+          <p className="text-red-500 text-xs sm:text-sm mt-1">
+            {errors.date.message}
+          </p>
         )}
       </div>
 
       {/* Category */}
       <div>
-        <Label htmlFor="category">Category</Label>
+        <Label htmlFor="category" className="text-sm sm:text-base">
+          Category
+        </Label>
         <Select
-          onValueChange={(value) =>
-            setValue('category', value as Transaction['category'])
+          onValueChange={(value: z.infer<typeof transactionSchema>['category']) =>
+            setValue('category', value)
           }
           defaultValue="Other"
         >
-          <SelectTrigger>
+          <SelectTrigger className="h-10 sm:h-11 text-sm sm:text-base">
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
           <SelectContent>
@@ -114,18 +138,26 @@ export default function TransactionForm({ onTransactionAdded }: Props) {
           </SelectContent>
         </Select>
         {errors.category && (
-          <p className="text-red-500 text-sm">{errors.category.message}</p>
+          <p className="text-red-500 text-xs sm:text-sm mt-1">
+            {errors.category.message}
+          </p>
         )}
       </div>
 
       {/* Submit Button */}
-      <Button type="submit" disabled={loading}>
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full h-10 sm:h-11 text-sm sm:text-base font-medium"
+      >
         {loading ? 'Adding...' : 'Add Transaction'}
       </Button>
 
       {/* Success Message */}
       {successMessage && (
-        <p className="text-green-600 text-sm">{successMessage}</p>
+        <p className="text-green-600 text-xs sm:text-sm text-center">
+          {successMessage}
+        </p>
       )}
     </form>
   );
