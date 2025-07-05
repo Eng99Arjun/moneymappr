@@ -5,16 +5,20 @@
 @layer base {
   html {
     height: 100%;
+    font-size: 14px;
+  }
+  
+  @screen sm {
+    html {
+      font-size: 16px;
+    }
   }
   
   body {
     height: 100%;
     margin: 0;
     padding: 0;
-  }
-  
-  #__next {
-    height: 100%;
+    line-height: 1.5;
   }
 }
 
@@ -24,6 +28,80 @@
   }
   
   .section-header {
-    @apply text-xl font-semibold text-gray-900 dark:text-white mb-4;
+    @apply text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4;
   }
+  
+  .responsive-input {
+    @apply h-10 sm:h-11 text-sm sm:text-base px-3 py-2;
+  }
+  
+  .responsive-button {
+    @apply h-10 sm:h-11 text-sm sm:text-base px-4 py-2;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-to-br from-orange-50 via-pink-50 to-rose-100;
+  }
+  
+  .gradient-bg-dark {
+    background: linear-gradient(135deg, 
+      #0f172a 0%, 
+      #1e1b4b 25%, 
+      #312e81 50%, 
+      #4c1d95 75%, 
+      #581c87 100%
+    );
+  }
+  
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  }
+  
+  .glass-effect-dark {
+    background: rgba(17, 25, 40, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+}
+
+/* Custom scrollbar for better mobile experience */
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-white/20 dark:bg-gray-800/20 rounded-full;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-blue-300/50 dark:bg-blue-600/50 rounded-full;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-blue-400/70 dark:bg-blue-500/70;
+  }
+}
+
+/* Animated gradient background */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
 }
