@@ -7,10 +7,10 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 
-import { Input } from './ui/Input';
-import { Button } from './ui/Button';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select';
-import { Label } from './ui/Label';
+import { Label } from './ui/label';
 
 import { useState } from 'react';
 
@@ -79,17 +79,16 @@ export default function TransactionForm(){
 
             <div>
                 <Label htmlFor='category'>Category</Label>
-                <Select onValueChange = {(value: z.infer<typeof transactionSchema>['category']) => setValue('category', value)} defaultValue= "Other" >
+                <Select onValueChange={(value: z.infer<typeof transactionSchema>['category']) => setValue('category', value)} defaultValue="Other">
                     <SelectTrigger>
-                        <SelectValue placeholder = "Select a category" />
+                        <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="Food">Food </SelectItem>
-                        <SelectItem value="Bills">Bills </SelectItem>
-                        <SelectItem value="Transport">Transport </SelectItem>
-                        <SelectItem value="Shopping">Shopping </SelectItem>
-                        <SelectItem value="Other">Other </SelectItem>
-
+                    <SelectContent className="z-50">
+                        <SelectItem value="Food">Food</SelectItem>
+                        <SelectItem value="Bills">Bills</SelectItem>
+                        <SelectItem value="Transport">Transport</SelectItem>
+                        <SelectItem value="Shopping">Shopping</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                 </Select>
                 {errors.category && <p className='text-red-500 text-sm'>{errors.category.message}</p>}
