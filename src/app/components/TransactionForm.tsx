@@ -71,7 +71,7 @@ export default function TransactionForm({ onTransactionAdded }: Props) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
       {/* Amount */}
       <div>
-        <Label htmlFor="amount" className="text-sm sm:text-base">
+        <Label htmlFor="amount" className="text-sm sm:text-base dark:text-white">
           Amount
         </Label>
         <Input
@@ -88,7 +88,7 @@ export default function TransactionForm({ onTransactionAdded }: Props) {
 
       {/* Description */}
       <div>
-        <Label htmlFor="description" className="text-sm sm:text-base">
+        <Label htmlFor="description" className="text-sm sm:text-base dark:text-white">
           Description
         </Label>
         <Input
@@ -100,7 +100,7 @@ export default function TransactionForm({ onTransactionAdded }: Props) {
 
       {/* Date */}
       <div>
-        <Label htmlFor="date" className="text-sm sm:text-base">
+        <Label htmlFor="date" className="text-sm sm:text-base dark:text-white">
           Date
         </Label>
         <Input
@@ -117,7 +117,7 @@ export default function TransactionForm({ onTransactionAdded }: Props) {
 
       {/* Category */}
       <div>
-        <Label htmlFor="category" className="text-sm sm:text-base">
+        <Label htmlFor="category" className="text-sm sm:text-base dark:text-white">
           Category
         </Label>
         <Select
@@ -126,7 +126,7 @@ export default function TransactionForm({ onTransactionAdded }: Props) {
           }
           defaultValue="Other"
         >
-          <SelectTrigger className="h-10 sm:h-11 text-sm sm:text-base">
+          <SelectTrigger className="h-10 sm:h-11 text-sm sm:text-base dark:text-white bg-">
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
           <SelectContent>
