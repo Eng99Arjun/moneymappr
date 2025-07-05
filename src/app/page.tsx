@@ -5,6 +5,7 @@ import { fetchTransactions } from '@/lib/utils';
 import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 import { Transaction } from '@/types';
+import Dashboard from './components/Dashboard';
 
 export default function HomePage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -33,6 +34,8 @@ export default function HomePage() {
       <TransactionForm onTransactionAdded={loadTransactions} />
 
       <TransactionList transactions={transactions} loading={loading} />
+
+      <Dashboard/>
     </main>
   );
 }
