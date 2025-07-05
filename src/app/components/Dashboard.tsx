@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Transaction } from '@/types';
 import { Card } from './ui/card';
-import { Badge } from './ui/badge';
-import axios from 'axios';
 import { Progress } from './ui/progress';
 import MonthlyBarChart from './charts/MonthlyBarChart';
 import CategoryPieChart from './charts/CategoryPieChart';
@@ -23,7 +22,6 @@ type DashboardProps = {
 export default function Dashboard({ transactions }: DashboardProps) {
   const [budgets, setBudgets] = useState<Budget[]>([]);
 
-  // 🧠 Fetch budgets for current month
   useEffect(() => {
     const now = new Date();
     const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -44,37 +42,26 @@ export default function Dashboard({ transactions }: DashboardProps) {
 
   const total = transactions.reduce((sum, tx) => sum + tx.amount, 0);
 
-  // 🧮 Actual spend per category
   const categorySpending: Record<string, number> = {};
   transactions.forEach((tx) => {
     categorySpending[tx.category] = (categorySpending[tx.category] || 0) + tx.amount;
   });
 
-  // 🕒 Recent 5 transactions
-  const recentTransactions = [...transactions]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5);
-
-  const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString('en-IN', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
-
   return (
-    <div className="mt-10 space-y-6">
+    <div className="mt-6 space-y-6">
       {/* ✅ Total Expenses */}
       <Card className="p-4 bg-green-50 border border-green-200 dark:bg-green-900 dark:text-white">
         <h2 className="text-lg font-semibold">Total Expenses</h2>
         <p className="text-2xl font-bold mt-2">₹{total}</p>
       </Card>
 
-      {/* 📊 Budget Progress Bars */}
+      {/* 🎯 Budget Progress Bars */}
       <Card className="p-4">
-        <h2 className="text-lg font-semibold mb-4">Budget vs Actual</h2>
+        <h2 className="text-lg font-semibold mb-4 dark:text-white">Budget vs Actual</h2>
         {budgets.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No budgets set for this month.</p>
+          <p className="text-sm text-muted-foreground dark:text-white">
+            No budgets set for this month.
+          </p>
         ) : (
           <div className="space-y-4">
             {budgets.map((budget) => {
@@ -84,7 +71,7 @@ export default function Dashboard({ transactions }: DashboardProps) {
 
               return (
                 <div key={budget.category}>
-                  <div className="flex justify-between mb-1 text-sm">
+                  <div className="flex justify-between mb-1 text-sm dark:text-white">
                     <span className="font-medium">{budget.category}</span>
                     <span className={`${over ? 'text-red-500 font-semibold' : ''}`}>
                       ₹{spent} / ₹{budget.amount}
@@ -96,22 +83,6 @@ export default function Dashboard({ transactions }: DashboardProps) {
             })}
           </div>
         )}
-      </Card>
-
-      {/* 🕒 Recent Transactions */}
-      <Card className="p-4">
-        <h2 className="text-lg font-semibold mb-3">Recent Transactions</h2>
-        <ul className="space-y-2 text-sm">
-          {recentTransactions.map((tx) => (
-            <li key={tx._id} className="flex justify-between">
-              <span className="font-medium">
-                ₹{tx.amount}{' '}
-                <span className="text-muted-foreground text-xs">({tx.category})</span>
-              </span>
-              <span className="text-muted-foreground text-xs">{formatDate(tx.date)}</span>
-            </li>
-          ))}
-        </ul>
       </Card>
 
       {/* 📈 Charts */}
