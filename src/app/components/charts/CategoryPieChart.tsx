@@ -23,7 +23,7 @@ const CategoryPieChart = ({ transactions }: Props) => {
 
   return (
     <div className="p-4 border rounded-md bg-white dark:bg-zinc-900">
-      <h2 className="text-lg font-semibold mb-2">🍕 Category Breakdown</h2>
+      <h2 className="text-lg font-semibold mb-2 dark:text-white">🍕 Category Breakdown</h2>
       <ResponsiveContainer width="100%" height={250}>
         <PieChart>
           <Pie
