@@ -26,7 +26,7 @@ const MonthlyBarChart = ({ transactions }: Props) => {
 
   return (
     <div className="p-4 border rounded-md bg-white dark:bg-zinc-900">
-      <h2 className="text-lg font-semibold mb-2">📊 Monthly Expenses</h2>
+      <h2 className="text-lg font-semibold mb-2 dark:text-white">📊 Monthly Expenses</h2>
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
