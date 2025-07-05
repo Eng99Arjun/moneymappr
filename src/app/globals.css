@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    height: 100%;
+  }
+  
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #__next {
+    height: 100%;
+  }
+}
+
+@layer components {
+  .card-container {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700;
+  }
+  
+  .section-header {
+    @apply text-xl font-semibold text-gray-900 dark:text-white mb-4;
+  }
+}
