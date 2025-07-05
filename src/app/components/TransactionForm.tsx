@@ -7,14 +7,13 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
+import { Input } from './ui/Input';
+import { Button } from './ui/Button';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select';
+import { Label } from './ui/Label';
 
 import { useState } from 'react';
-import { string } from 'zod/v4-mini';
-import { register } from 'module';
+
 
 const transactionSchema = z.object({
     amount: z.coerce.number().positive({ message:'Amount must be positive' }),
@@ -33,6 +32,7 @@ export default function TransactionForm(){
         register,
         handleSubmit,
         reset,
+        setValue,
         formState: {errors},
     } = useForm<TransactionFormData>({
         resolver: zodResolver(transactionSchema),
@@ -63,9 +63,44 @@ export default function TransactionForm(){
             <div>
                 <Label htmlFor ="amount">Amount</Label>
                 <Input type='number' {...register('amount')}/>
-                {errors.amount && <p className='text-red-500'>{errors.amount.message}<p/>}
+                {errors.amount && <p className='text-red-500 text-sm'>{errors.amount.message}</p>}
             </div>
 
+            <div>
+                <Label htmlFor='description'>Description</Label>
+                <Input type='text' {...register('description')} />
+            </div>
+
+            <div>
+                <Label htmlFor='date'>Date</Label>
+                <Input type='date' {...register('date')} />
+                {errors.date && <p className='text-red-500 text-sm'>{errors.date.message}</p>}
+            </div>
+
+            <div>
+                <Label htmlFor='category'>Category</Label>
+                <Select onValueChange = {(value: z.infer<typeof transactionSchema>['category']) => setValue('category', value)} defaultValue= "Other" >
+                    <SelectTrigger>
+                        <SelectValue placeholder = "Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Food">Food </SelectItem>
+                        <SelectItem value="Bills">Bills </SelectItem>
+                        <SelectItem value="Transport">Transport </SelectItem>
+                        <SelectItem value="Shopping">Shopping </SelectItem>
+                        <SelectItem value="Other">Other </SelectItem>
+
+                    </SelectContent>
+                </Select>
+                {errors.category && <p className='text-red-500 text-sm'>{errors.category.message}</p>}
+            </div>
+
+                  <Button type="submit" disabled={loading}>
+                        {loading ? 'Adding...' : 'Add Transaction'}
+                  </Button>
+            {successMessage && <p className="text-green-600 text-sm">{successMessage}</p>}
+
+
         </form>
-    )
+    );
 }
