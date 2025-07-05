@@ -1,12 +1,12 @@
-import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Money Mappr',
-  description: 'Personal Finance Visualizer',
+  title: 'Personal Finance Tracker',
+  description: 'Track your personal finances with ease',
 };
 
 export default function RootLayout({
@@ -15,11 +15,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-background text-foreground min-h-screen`}>
-        <main className="max-w-2xl mx-auto px-4 py-8">
+    <html lang="en" className="h-full">
+      <body className={`${inter.className} h-full bg-gray-50 dark:bg-gray-900`}>
+        <div id="root" className="h-full">
           {children}
-        </main>
+        </div>
       </body>
     </html>
   );
