@@ -1,71 +1,41 @@
-
-
-
 'use client';
 
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
+import { Pie, PieChart, Tooltip, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { Transaction } from '@/types';
 
-type CategoryTotal = {
-  category: string;
-  total: number;
+type Props = {
+  transactions: Transaction[];
 };
 
-// Define consistent colors for categories
-const COLORS: Record<string, string> = {
-  Food: '#34d399',
-  Bills: '#f87171',
-  Transport: '#60a5fa',
-  Shopping: '#a78bfa',
-  Other: '#9ca3af',
-};
+const COLORS = ['#34d399', '#60a5fa', '#f87171', '#c084fc', '#9ca3af'];
 
-export default function CategoryPieChart() {
-  const [data, setData] = useState<CategoryTotal[]>([]);
-  const [loading, setLoading] = useState(true);
+const CategoryPieChart = ({ transactions }: Props) => {
+  const categoryTotals: Record<string, number> = {};
 
-  useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        const res = await axios.get('/api/transactions/summary');
-        setData(res.data.categoryTotals);
-      } catch (err) {
-        console.error('Failed to load category chart data', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  transactions.forEach((tx) => {
+    categoryTotals[tx.category] = (categoryTotals[tx.category] || 0) + tx.amount;
+  });
 
-    fetchSummary();
-  }, []);
-
-  if (loading) return <p className="text-sm text-muted-foreground">Loading chart...</p>;
+  const chartData = Object.entries(categoryTotals).map(([category, value]) => ({
+    name: category,
+    value,
+  }));
 
   return (
-    <div className="w-full h-64">
-      <h2 className="text-lg font-semibold mb-2">Spending by Category</h2>
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="p-4 border rounded-md bg-white dark:bg-zinc-900">
+      <h2 className="text-lg font-semibold mb-2">🍕 Category Breakdown</h2>
+      <ResponsiveContainer width="100%" height={250}>
         <PieChart>
           <Pie
-            data={data}
-            dataKey="total"
-            nameKey="category"
+            dataKey="value"
+            data={chartData}
             cx="50%"
             cy="50%"
             outerRadius={80}
-            fill="#8884d8"
             label
           >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[entry.category] || '#8884d8'} />
+            {chartData.map((_, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip />
@@ -74,4 +44,6 @@ export default function CategoryPieChart() {
       </ResponsiveContainer>
     </div>
   );
-}
+};
+
+export default CategoryPieChart;
