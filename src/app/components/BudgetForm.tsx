@@ -56,17 +56,18 @@ export default function BudgetForm({ onBudgetSaved }: { onBudgetSaved?: () => vo
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-10">
-      <h2 className="text-lg font-semibold">Set Monthly Budget</h2>
+      <h2 className="text-lg font-semibold text-yellow-700">Set Monthly Budget</h2>
 
       <div>
-        <Label>Category</Label>
+        <Label className='dark:text-white'>Category</Label>
         <Select defaultValue="Food" onValueChange={(val) => setValue('category', val as FormData['category'])}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select category" />
+          <SelectTrigger className='bg-white'>
+            <SelectValue className='bg-white' placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
             {['Food', 'Transport', 'Bills', 'Shopping', 'Other'].map((cat) => (
-              <SelectItem key={cat} value={cat}>
+              <SelectItem key={cat} value={cat} className='
+              bg-white dark:bg-zinc-900 dark:text-white'>
                 {cat}
               </SelectItem>
             ))}
@@ -76,7 +77,7 @@ export default function BudgetForm({ onBudgetSaved }: { onBudgetSaved?: () => vo
       </div>
 
       <div>
-        <Label>Budget Amount</Label>
+        <Label className='dark:text-white'>Budget Amount</Label>
         <Input type="number" {...register('amount')} />
         {errors.amount && <p className="text-red-500 text-sm">{errors.amount.message}</p>}
       </div>
