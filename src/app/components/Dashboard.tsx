@@ -49,13 +49,13 @@ export default function Dashboard({ transactions }: DashboardProps) {
 
   return (
     <div className="mt-6 space-y-6">
-      {/* ✅ Total Expenses */}
+      {/* Total Expenses */}
       <Card className="p-4 bg-green-50 border border-green-200 dark:bg-green-900 dark:text-white">
         <h2 className="text-lg font-semibold">Total Expenses</h2>
         <p className="text-2xl font-bold mt-2">₹{total}</p>
       </Card>
 
-      {/* 🎯 Budget Progress Bars */}
+      {/* Budget Progress Bars */}
       <Card className="p-4">
         <h2 className="text-lg font-semibold mb-4 dark:text-white">Budget vs Actual</h2>
         {budgets.length === 0 ? (
@@ -85,7 +85,7 @@ export default function Dashboard({ transactions }: DashboardProps) {
         )}
       </Card>
 
-      {/* 📈 Charts */}
+      {/* Charts */}
       <MonthlyBarChart transactions={transactions} />
       <CategoryPieChart transactions={transactions} />
       <BudgetComparisonChart budgets={budgets} actuals={categorySpending} />
