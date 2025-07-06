@@ -22,7 +22,6 @@ const BudgetComparisonChart = dynamic(() => import('./charts/BudgetComparisonCha
   loading: () => <div className="h-64 bg-gray-100 animate-pulse rounded-lg" />
 });
 
-// Move type to shared types file
 export type Budget = {
   category: string;
   amount: number;
@@ -34,12 +33,10 @@ type DashboardProps = {
   budgets?: Budget[];
 };
 
-// Memoize for performance
 const Dashboard = React.memo(function Dashboard({ 
   transactions, 
   budgets = [] 
 }: DashboardProps) {
-  // Early return with better message
   if (!transactions || transactions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -54,7 +51,6 @@ const Dashboard = React.memo(function Dashboard({
     );
   }
 
-  // Memoize calculations
   const dashboardData = React.useMemo(() => {
     const total = transactions.reduce((sum, tx) => sum + tx.amount, 0);
     
@@ -68,7 +64,6 @@ const Dashboard = React.memo(function Dashboard({
 
   const { total, categorySpending } = dashboardData;
 
-  // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -123,6 +118,15 @@ const Dashboard = React.memo(function Dashboard({
               const isOverBudget = spent > budget.amount;
               const isNearLimit = percent > 80 && !isOverBudget;
 
+              // Debug logging
+              console.log(`Budget Debug - ${budget.category}:`, {
+                spent,
+                budgetAmount: budget.amount,
+                percent,
+                isOverBudget,
+                categorySpending
+              });
+
               return (
                 <div key={budget.category} className="space-y-3">
                   <div className="flex justify-between items-center">
@@ -145,7 +149,33 @@ const Dashboard = React.memo(function Dashboard({
                     </div>
                   </div>
                   
-                  <div className="relative">
+                  {/* Fixed Progress Bar */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs text-gray-500">
+                      <span>Progress</span>
+                      <span>{Math.round(percent)}%</span>
+                    </div>
+                    
+                    {/* Custom Progress Bar Implementation */}
+                    <div className="w-full bg-gray-200 rounded-full h-3 dark:bg-gray-700 overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-500 ease-out ${
+                          isOverBudget 
+                            ? 'bg-red-500' 
+                            : isNearLimit 
+                            ? 'bg-yellow-500' 
+                            : 'bg-green-500'
+                        }`}
+                        style={{ 
+                          width: `${Math.min(percent, 100)}%`,
+                          minWidth: percent > 0 ? '2px' : '0px' // Ensure visibility for small values
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Alternative: Use Radix Progress if available */}
+                  {/* <div className="relative">
                     <Progress 
                       value={percent} 
                       className={`h-3 ${
@@ -154,14 +184,12 @@ const Dashboard = React.memo(function Dashboard({
                         'bg-gray-100 dark:bg-gray-800'
                       }`}
                     />
-                    <div className="absolute -top-1 -right-1 text-xs font-medium text-gray-600 dark:text-gray-400">
-                      {Math.round(percent)}%
-                    </div>
-                  </div>
+                  </div> */}
                   
                   {isOverBudget && (
-                    <div className="text-xs text-red-600 font-medium">
-                      ⚠️ Over budget by {formatCurrency(spent - budget.amount)}
+                    <div className="text-xs text-red-600 font-medium flex items-center gap-1">
+                      <span>⚠️</span>
+                      Over budget by {formatCurrency(spent - budget.amount)}
                     </div>
                   )}
                 </div>
