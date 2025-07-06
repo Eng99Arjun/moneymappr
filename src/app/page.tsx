@@ -1,15 +1,24 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import axios from 'axios';
 import { fetchTransactions } from '@/lib/utils';
 import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 import { Transaction } from '@/types';
 import Dashboard from './components/Dashboard';
 import BudgetForm from './components/BudgetForm';
+import { ErrorBoundary } from './components/ErrorBoundary';
+
+type Budget = {
+  category: string;
+  amount: number;
+  month: string;
+};
 
 export default function HomePage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [budgets, setBudgets] = useState<Budget[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadTransactions = useCallback(async () => {
@@ -24,9 +33,24 @@ export default function HomePage() {
     }
   }, []);
 
+  const loadBudgets = useCallback(async () => {
+    try {
+      const now = new Date();
+      const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const res = await axios.get(`/api/budgets?month=${month}`);
+      setBudgets(res.data);
+    } catch (err) {
+      console.error('Failed to fetch budgets', err);
+    }
+  }, []);
+
+  const loadAllData = useCallback(async () => {
+    await Promise.all([loadTransactions(), loadBudgets()]);
+  }, [loadTransactions, loadBudgets]);
+
   useEffect(() => {
-    loadTransactions();
-  }, [loadTransactions]);
+    loadAllData();
+  }, [loadAllData]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900">
@@ -61,7 +85,7 @@ export default function HomePage() {
               <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-blue-500 flex items-center gap-2">
                 🎯 Set Budget
               </h2>
-              <BudgetForm onBudgetSaved={loadTransactions} />
+              <BudgetForm onBudgetSaved={loadBudgets} />
             </div>
           </div>
         </section>
@@ -74,7 +98,9 @@ export default function HomePage() {
               <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-blue-500 flex items-center gap-2">
                 📊 Dashboard
               </h2>
-              <Dashboard transactions={transactions} />
+              <ErrorBoundary>
+                <Dashboard transactions={transactions} budgets={budgets} />
+              </ErrorBoundary>
             </div>
 
             {/* Transaction List */}
