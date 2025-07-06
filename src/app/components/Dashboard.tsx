@@ -3,7 +3,6 @@
 import React from 'react';
 import { Transaction } from '@/types';
 import { Card } from './ui/card';
-import { Progress } from './ui/progress';
 import dynamic from 'next/dynamic';
 
 // Lazy load chart components for better performance
@@ -37,6 +36,34 @@ const Dashboard = React.memo(function Dashboard({
   transactions, 
   budgets = [] 
 }: DashboardProps) {
+  // Move useMemo before early return to fix React Hooks rule
+  const dashboardData = React.useMemo(() => {
+    if (!transactions || transactions.length === 0) {
+      return { total: 0, categorySpending: {} };
+    }
+
+    const total = transactions.reduce((sum, tx) => sum + tx.amount, 0);
+    
+    const categorySpending: Record<string, number> = {};
+    transactions.forEach((tx) => {
+      categorySpending[tx.category] = (categorySpending[tx.category] || 0) + tx.amount;
+    });
+
+    return { total, categorySpending };
+  }, [transactions]);
+
+  const { total, categorySpending } = dashboardData;
+
+  const formatCurrency = React.useCallback((amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }, []);
+
+  // Early return after hooks
   if (!transactions || transactions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -50,28 +77,6 @@ const Dashboard = React.memo(function Dashboard({
       </div>
     );
   }
-
-  const dashboardData = React.useMemo(() => {
-    const total = transactions.reduce((sum, tx) => sum + tx.amount, 0);
-    
-    const categorySpending: Record<string, number> = {};
-    transactions.forEach((tx) => {
-      categorySpending[tx.category] = (categorySpending[tx.category] || 0) + tx.amount;
-    });
-
-    return { total, categorySpending };
-  }, [transactions]);
-
-  const { total, categorySpending } = dashboardData;
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   return (
     <div className="space-y-6">
@@ -118,15 +123,6 @@ const Dashboard = React.memo(function Dashboard({
               const isOverBudget = spent > budget.amount;
               const isNearLimit = percent > 80 && !isOverBudget;
 
-              // Debug logging
-              console.log(`Budget Debug - ${budget.category}:`, {
-                spent,
-                budgetAmount: budget.amount,
-                percent,
-                isOverBudget,
-                categorySpending
-              });
-
               return (
                 <div key={budget.category} className="space-y-3">
                   <div className="flex justify-between items-center">
@@ -149,14 +145,13 @@ const Dashboard = React.memo(function Dashboard({
                     </div>
                   </div>
                   
-                  {/* Fixed Progress Bar */}
+                  {/* Custom Progress Bar */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs text-gray-500">
                       <span>Progress</span>
                       <span>{Math.round(percent)}%</span>
                     </div>
                     
-                    {/* Custom Progress Bar Implementation */}
                     <div className="w-full bg-gray-200 rounded-full h-3 dark:bg-gray-700 overflow-hidden">
                       <div 
                         className={`h-full rounded-full transition-all duration-500 ease-out ${
@@ -168,23 +163,11 @@ const Dashboard = React.memo(function Dashboard({
                         }`}
                         style={{ 
                           width: `${Math.min(percent, 100)}%`,
-                          minWidth: percent > 0 ? '2px' : '0px' // Ensure visibility for small values
+                          minWidth: percent > 0 ? '2px' : '0px'
                         }}
                       />
                     </div>
                   </div>
-                  
-                  {/* Alternative: Use Radix Progress if available */}
-                  {/* <div className="relative">
-                    <Progress 
-                      value={percent} 
-                      className={`h-3 ${
-                        isOverBudget ? 'bg-red-100 dark:bg-red-900/30' : 
-                        isNearLimit ? 'bg-yellow-100 dark:bg-yellow-900/30' : 
-                        'bg-gray-100 dark:bg-gray-800'
-                      }`}
-                    />
-                  </div> */}
                   
                   {isOverBudget && (
                     <div className="text-xs text-red-600 font-medium flex items-center gap-1">

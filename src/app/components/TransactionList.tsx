@@ -1,49 +1,53 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
+import axios from 'axios';
+import { Transaction } from '@/types';
+import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
-import { Button } from './ui/button';
 import EditTransactionDialog from './EditTransactionDialog';
-import { Transaction } from '@/types';
 
 type TransactionListProps = {
   transactions: Transaction[];
-  loading: boolean;
+  loading?: boolean;
   onRefresh: () => void;
 };
 
-export default function TransactionList({
-  transactions,
-  loading,
-  onRefresh,
-}: TransactionListProps) {
-  const [error, setError] = useState('');
+export default function TransactionList({ transactions, loading, onRefresh }: TransactionListProps) {
   const [editTx, setEditTx] = useState<Transaction | null>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
-  const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString('en-IN', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    });
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-IN');
+  };
+
   const handleDelete = async (id: string) => {
-    setLoadingId(id);
+    if (!confirm('Are you sure you want to delete this transaction?')) {
+      return;
+    }
+
     try {
+      setLoadingId(id);
       await axios.delete(`/api/transactions/${id}`);
-      onRefresh(); // Ask parent to refresh
-    } catch (err) {
-      console.error(err);
+      onRefresh();
+    } catch (error) {
+      console.error('Failed to delete transaction:', error);
       alert('Failed to delete transaction');
     } finally {
       setLoadingId(null);
     }
   };
 
-  if (loading) return <p className="text-sm text-muted-foreground text-center py-4">Loading transactions...</p>;
-  if (error) return <p className="text-sm text-red-500 text-center py-4">{error}</p>;
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="h-20 bg-gray-100 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -58,7 +62,6 @@ export default function TransactionList({
               key={tx._id}
               className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 sm:p-4 bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm border border-white/30 dark:border-gray-600/30 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 space-y-3 sm:space-y-0"
             >
-              {/* Main Info */}
               <div className="flex-1">
                 <p className="text-base sm:text-lg font-medium text-gray-900 dark:text-white">
                   ₹{tx.amount}
@@ -70,7 +73,6 @@ export default function TransactionList({
                 )}
               </div>
 
-              {/* Badge and Actions */}
               <div className="flex flex-row sm:flex-col justify-between sm:items-end sm:text-right space-y-0 sm:space-y-2">
                 <div className="flex items-center space-x-2 sm:space-x-0 sm:flex-col sm:space-y-1">
                   <Badge
@@ -94,7 +96,6 @@ export default function TransactionList({
                   </p>
                 </div>
                 
-                {/* Action Buttons */}
                 <div className="flex gap-2">
                   <Button
                     size="sm"

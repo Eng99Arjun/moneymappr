@@ -1,164 +1,110 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import axios from 'axios';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from './ui/select';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select';
 import { Label } from './ui/label';
 
-import { useState } from 'react';
-import { Transaction } from '@/types';
-
-const transactionSchema = z.object({
+const schema = z.object({
   amount: z.coerce.number().positive({ message: 'Amount must be positive' }),
   description: z.string().optional(),
-  date: z.string().min(1, { message: 'Date is required' }),
   category: z.enum(['Food', 'Transport', 'Bills', 'Shopping', 'Other']),
+  date: z.string().min(1, { message: 'Date is required' }),
 });
 
-type TransactionFormData = z.infer<typeof transactionSchema>;
+type FormData = z.infer<typeof schema>;
 
-type Props = {
-  onTransactionAdded: () => void;
-};
-
-export default function TransactionForm({ onTransactionAdded }: Props) {
-  const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-
+export default function TransactionForm({ onTransactionAdded }: { onTransactionAdded?: () => void }) {
   const {
     register,
     handleSubmit,
-    reset,
     setValue,
     formState: { errors },
-  } = useForm<TransactionFormData>({
-    resolver: zodResolver(transactionSchema),
+    reset
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
     defaultValues: {
       amount: 0,
       description: '',
-      date: '',
-      category: 'Other',
+      category: 'Food',
+      date: new Date().toISOString().split('T')[0],
     },
   });
 
-  const onSubmit = async (data: TransactionFormData) => {
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (data: FormData) => {
     try {
       setLoading(true);
       await axios.post('/api/transactions', data);
-      setSuccessMessage('Transaction added!');
+      toast.success('Transaction added!');
+      onTransactionAdded?.();
       reset();
-      onTransactionAdded(); // ✅ Trigger refresh in parent
     } catch (error) {
       console.error(error);
-      alert('Something went wrong');
+      toast.error('Failed to add transaction');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
-      {/* Amount */}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <Label htmlFor="amount" className="text-sm sm:text-base dark:text-white">
-          Amount
-        </Label>
-        <Input
-          type="number"
-          className="h-10 sm:h-11 text-sm sm:text-base"
+        <Label className='dark:text-white'>Amount (₹)</Label>
+        <Input 
+          type="number" 
           {...register('amount')}
+          placeholder="Enter amount"
         />
-        {errors.amount && (
-          <p className="text-red-500 text-xs sm:text-sm mt-1">
-            {errors.amount.message}
-          </p>
-        )}
+        {errors.amount && <p className="text-red-500 text-sm">{errors.amount.message}</p>}
       </div>
 
-      {/* Description */}
       <div>
-        <Label htmlFor="description" className="text-sm sm:text-base dark:text-white">
-          Description
-        </Label>
-        <Input
-          type="text"
-          className="h-10 sm:h-11 text-sm sm:text-base"
+        <Label className='dark:text-white'>Description</Label>
+        <Input 
           {...register('description')}
+          placeholder="Optional description"
         />
+        {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
       </div>
 
-      {/* Date */}
       <div>
-        <Label htmlFor="date" className="text-sm sm:text-base dark:text-white">
-          Date
-        </Label>
-        <Input
-          type="date"
-          className="h-10 sm:h-11 text-sm sm:text-base"
-          {...register('date')}
-        />
-        {errors.date && (
-          <p className="text-red-500 text-xs sm:text-sm mt-1">
-            {errors.date.message}
-          </p>
-        )}
-      </div>
-
-      {/* Category */}
-      <div>
-        <Label htmlFor="category" className="text-sm sm:text-base dark:text-white">
-          Category
-        </Label>
-        <Select
-          onValueChange={(value: z.infer<typeof transactionSchema>['category']) =>
-            setValue('category', value)
-          }
-          defaultValue="Other"
-        >
-          <SelectTrigger className="h-10 sm:h-11 text-sm sm:text-base dark:text-white bg-">
-            <SelectValue placeholder="Select a category" />
+        <Label className='dark:text-white'>Category</Label>
+        <Select defaultValue="Food" onValueChange={(val) => setValue('category', val as FormData['category'])}>
+          <SelectTrigger className='bg-white'>
+            <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Food">Food</SelectItem>
-            <SelectItem value="Bills">Bills</SelectItem>
-            <SelectItem value="Transport">Transport</SelectItem>
-            <SelectItem value="Shopping">Shopping</SelectItem>
-            <SelectItem value="Other">Other</SelectItem>
+            {['Food', 'Transport', 'Bills', 'Shopping', 'Other'].map((cat) => (
+              <SelectItem key={cat} value={cat} className='bg-white dark:bg-zinc-900 dark:text-white'>
+                {cat}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-        {errors.category && (
-          <p className="text-red-500 text-xs sm:text-sm mt-1">
-            {errors.category.message}
-          </p>
-        )}
+        {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
       </div>
 
-      {/* Submit Button */}
-      <Button
-        type="submit"
-        disabled={loading}
-        className="w-full h-10 sm:h-11 text-sm sm:text-base font-medium"
-      >
+      <div>
+        <Label className='dark:text-white'>Date</Label>
+        <Input 
+          type="date" 
+          {...register('date')}
+        />
+        {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
+      </div>
+
+      <Button type="submit" disabled={loading}>
         {loading ? 'Adding...' : 'Add Transaction'}
       </Button>
-
-      {/* Success Message */}
-      {successMessage && (
-        <p className="text-green-600 text-xs sm:text-sm text-center">
-          {successMessage}
-        </p>
-      )}
     </form>
   );
 }
