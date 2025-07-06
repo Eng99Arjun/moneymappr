@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💸 MoneyMappr
 
-## Getting Started
+**A Modern Personal Finance Tracker Built for Yardstick Full Stack Development Internship**
 
-First, run the development server:
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6.0-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+> **Assignment Project for Yardstick Full Stack Development Internship**  
+> Demonstrating proficiency in modern web development technologies and best practices.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Project Overview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+MoneyMappr is a comprehensive personal finance tracking application that enables users to manage their expenses, set budgets, and visualize spending patterns through interactive dashboards. Built with cutting-edge technologies, this project showcases full-stack development capabilities required for the Yardstick internship position.
 
-## Learn More
+### 🌟 Key Highlights
 
-To learn more about Next.js, take a look at the following resources:
+- **Full-Stack Architecture**: Complete CRUD operations with Next.js API routes
+- **Modern UI/UX**: Responsive design with glassmorphism effects and dark mode
+- **Type Safety**: Comprehensive TypeScript implementation
+- **Data Visualization**: Interactive charts and progress indicators
+- **Real-time Updates**: Optimistic UI updates and instant feedback
+- **Mobile-First**: Fully responsive across all device sizes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ✨ Features
 
-## Deploy on Vercel
+### 💰 Transaction Management
+- ✅ Add new transactions with amount, description, category, and date
+- ✅ Edit existing transactions with inline editing
+- ✅ Delete transactions with confirmation
+- ✅ Real-time transaction list updates
+- ✅ Category-based organization (Food, Bills, Transport, Shopping, Other)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 📊 Dashboard & Analytics
+- ✅ Total expenses calculation and display
+- ✅ Budget vs actual spending comparison
+- ✅ Interactive progress bars for budget tracking
+- ✅ Monthly spending trends (Bar Chart)
+- ✅ Category-wise expense distribution (Pie Chart)
+- ✅ Budget comparison visualization
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 🎯 Budget Management
+- ✅ Set monthly budgets for different categories
+- ✅ Visual progress indicators for budget consumption
+- ✅ Over-budget alerts and warnings
+- ✅ Historical budget tracking
+
+### 🎨 UI/UX Excellence
+- ✅ Beautiful gradient backgrounds with glassmorphism
+- ✅ Dark mode support with system preference detection
+- ✅ Smooth animations and transitions
+- ✅ Responsive grid layouts (mobile-first approach)
+- ✅ Custom scrollbars and micro-interactions
+- ✅ Toast notifications for user feedback
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript 5.0
+- **Styling**: Tailwind CSS 3.4
+- **UI Components**: Radix UI Primitives
+- **Forms**: React Hook Form + Zod validation
+- **Charts**: Recharts for data visualization
+- **Icons**: Lucide React
+
+### Backend
+- **API**: Next.js API Routes (RESTful)
+- **Database**: MongoDB with Mongoose ODM
+- **Validation**: Zod schema validation
+- **Error Handling**: Comprehensive error boundaries
+
+### Development Tools
+- **Package Manager**: npm
+- **Linting**: ESLint with Next.js config
+- **Code Formatting**: Prettier
+- **Type Checking**: TypeScript compiler
+- **Version Control**: Git
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18.17 or later
+- MongoDB Atlas account or local MongoDB installation
+- Git for version control
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/moneymappr.git
+   cd moneymappr
